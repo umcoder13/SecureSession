@@ -1,6 +1,7 @@
 package com.example.securesession.service;
 
 import com.example.securesession.util.AesUtil;
+import com.example.securesession.util.Base64Util;
 import com.example.securesession.util.RedisUtil;
 import com.example.securesession.util.RsaUtil;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +21,7 @@ import java.util.Base64;
 @RequiredArgsConstructor
 public class SecureService {
     private final AesUtil aesUtil;
+    private final Base64Util base64Util;
     private final RsaUtil rsaUtil;
     private final RedisUtil redisUtil;
 
@@ -77,6 +79,16 @@ public class SecureService {
         }
 
         return isVerified;
+    }
+
+    public String encryptPlainText(String plainText) throws InvalidAlgorithmParameterException, NoSuchPaddingException, IllegalBlockSizeException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException {
+        byte[] sk = base64Util.decodingToByte(redisUtil.getData("sk"));
+        return base64Util.encodingToString(aesUtil.encryptDataToByte(plainText, sk));
+    }
+
+    public String decryptData(String encryptedData) throws InvalidAlgorithmParameterException, NoSuchPaddingException, IllegalBlockSizeException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException {
+        byte[] sk = base64Util.decodingToByte(redisUtil.getData("sk"));
+        return aesUtil.decryptData(base64Util.decodingToByte(encryptedData), sk);
     }
 
 

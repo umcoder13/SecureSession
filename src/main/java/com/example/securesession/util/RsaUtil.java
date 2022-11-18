@@ -41,7 +41,7 @@ public class RsaUtil {
 
     public String decRSA (String encrypted, PrivateKey prk) throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException,
             BadPaddingException, IllegalBlockSizeException {
-        Cipher cipher = Cipher.getInstance("RSA");
+        Cipher cipher = Cipher.getInstance("RSA/ECB/OAEPPadding");
         byte[] byteEncrypted = Base64.getDecoder().decode(encrypted.getBytes());
 
         cipher.init(Cipher.DECRYPT_MODE, prk);
